@@ -28,7 +28,6 @@ import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue
 <style scoped>
 #container {
   text-align: center;
-  
   position: absolute;
   left: 0;
   right: 0;
