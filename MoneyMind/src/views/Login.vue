@@ -12,23 +12,44 @@
               <ion-input v-model="fullName" type="text" placeholder="Enter your full name" required></ion-input>
             </ion-item>
           </div>
+
           <div class="input-group">
             <label class="input-label">Email Address</label>
             <ion-item class="input-field" lines="none">
               <ion-input v-model="email" type="email" placeholder="Enter your email address" required></ion-input>
             </ion-item>
           </div>
+
           <div class="input-group">
             <label class="input-label">Password</label>
             <ion-item class="input-field" lines="none">
               <ion-input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Enter your password" required></ion-input>
               <ion-icon :icon="showPassword ? eyeOff : eye" slot="end" @click="togglePassword" class="eye-icon"></ion-icon>
             </ion-item>
+            <p v-if="!isLogin" class="password-hint">
+              Password must be at least 8 characters, include an uppercase letter, a number, and a special character.
+            </p>
+          </div>
+
+          <!-- Campo para OTP solo cuando se solicita -->
+          <div v-if="showOtpInput" class="input-group">
+            <label class="input-label">Enter OTP</label>
+            <ion-item class="input-field" lines="none">
+              <ion-input v-model="otp" type="text" placeholder="Enter the OTP sent to your email" required></ion-input>
+            </ion-item>
           </div>
         </ion-list>
-        
-        <ion-button expand="full" @click="isLogin ? login() : signUp()" class="form-btn">{{ isLogin ? 'Sign In' : 'Sign Up' }}</ion-button>
-        
+
+        <!-- Botón para Login o Registro -->
+        <ion-button v-if="!showOtpInput" expand="full" @click="isLogin ? login() : signUp()" class="form-btn">
+          {{ isLogin ? 'Sign In' : 'Sign Up' }}
+        </ion-button>
+
+        <!-- Botón para verificar OTP -->
+        <ion-button v-if="showOtpInput" expand="full" @click="verifyOtp()" class="form-btn verify-btn">
+          Verify OTP
+        </ion-button>
+
         <p class="text-center account-text">
           {{ isLogin ? `Don't have an account?` : `Already have an account?` }}
           <a href="#" @click.prevent="toggleForm" class="toggle-link">{{ isLogin ? 'Sign Up' : 'Sign In' }}</a>
@@ -37,6 +58,8 @@
     </ion-content>
   </ion-page>
 </template>
+
+
 
 <script>
 import { ref } from 'vue';
@@ -51,8 +74,16 @@ export default {
     const fullName = ref('');
     const email = ref('');
     const password = ref('');
+    const otp = ref('');
     const showPassword = ref(false);
     const isDarkMode = ref(false);
+    const showOtpInput = ref(false); // Para mostrar el campo OTP
+
+    // Validar contraseña segura
+    const validatePassword = (password) => {
+      const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      return regex.test(password);
+    };
 
     const togglePassword = () => {
       showPassword.value = !showPassword.value;
@@ -60,17 +91,94 @@ export default {
 
     const toggleForm = () => {
       isLogin.value = !isLogin.value;
+      showOtpInput.value = false;
     };
 
-    const login = () => {
-      console.log('Logging in with:', email.value, password.value);
+    // Función para solicitar OTP
+    const requestOtp = async () => {
+      try {
+        const response = await fetch('https://api.tuapp.com/auth/request-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email.value })
+        });
+
+        if (!response.ok) throw new Error('Error al solicitar OTP');
+
+        showOtpInput.value = true; // Muestra el input para OTP
+        console.log('OTP enviado al email');
+      } catch (error) {
+        console.error('Error:', error);
+      }
     };
 
-    const signUp = () => {
-      console.log('Signing up with:', fullName.value, email.value, password.value);
+    // Función para verificar OTP y completar el login
+    const verifyOtp = async () => {
+      try {
+        const response = await fetch('https://api.tuapp.com/auth/verify-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email.value, otp: otp.value })
+        });
+
+        if (!response.ok) throw new Error('OTP incorrecto o expirado');
+
+        console.log('Inicio de sesión exitoso');
+      } catch (error) {
+        console.error('Error:', error);
+      }
     };
 
-    return { isLogin, fullName, email, password, showPassword, togglePassword, login, signUp, eye, eyeOff, toggleForm, isDarkMode };
+    // Función de login con OTP
+    const login = async () => {
+      if (!email.value.trim() || !password.value.trim()) {
+        alert('Por favor, ingresa tu correo y contraseña.');
+        return;
+      }
+
+      try {
+        // Aquí podrías hacer la autenticación del usuario antes de solicitar OTP
+        await requestOtp();
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    // Función de registro con validación de contraseña segura
+    const signUp = async () => {
+      if (!fullName.value.trim() || !email.value.trim()) {
+        alert('Por favor, completa todos los campos.');
+        return;
+      }
+
+      if (!validatePassword(password.value)) {
+        alert('La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, un número y un carácter especial.');
+        return;
+      }
+
+      try {
+        const response = await fetch('https://api.tuapp.com/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fullName: fullName.value,
+            email: email.value,
+            password: password.value
+          })
+        });
+
+        if (!response.ok) throw new Error('Error al registrarse');
+
+        console.log('Registro exitoso, por favor inicia sesión.');
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    return { 
+      isLogin, fullName, email, password, otp, showPassword, togglePassword, login, signUp, 
+      eye, eyeOff, toggleForm, isDarkMode, showOtpInput, verifyOtp 
+    };
   }
 };
 </script>
