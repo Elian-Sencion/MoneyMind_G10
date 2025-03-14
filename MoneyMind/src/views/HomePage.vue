@@ -1,25 +1,24 @@
 <template>
+  <link rel="stylesheet" href=
+  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <ion-page>
     <ion-header>
       <ion-toolbar>
         <div class="container">
           <div class="user-info">
             <ion-avatar>
-              <img src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50" alt="avatar" />
+              <img src="https://b2472105.smushcdn.com/2472105/wp-content/uploads/2023/03/Fotografia-de-Retrato-6-1920x1920.jpg?lossy=1&strip=1&webp=1" alt="avatar" />
             </ion-avatar>
             <div>
-              <p>Welcome back</p>
+              <div class="title">
+                <p>Welcome back</p>
+              </div>
               <h2 class="name">John Doe</h2>
             </div>
-            <div class="notification">
-              <ion-button 
-                fill="outline"
-                color="primary" 
-                class="round-button"
-                shape="round">
-                <img src="@/assets/icons/icon-notification.png" alt="Icono Personalizado" style="width: 40px; height: 40px;" />
-              </ion-button>
-            </div>
+            <button class="icon-button">
+      <i class="fas fa-bell"></i>
+          <span class="badge">3</span>
+      </button>
           </div>
         </div>
       </ion-toolbar>
@@ -29,11 +28,11 @@
       <div class="container-contenido">
         <ion-grid>
           <ion-row>
-            <ion-col size="8">
+            <ion-col size="12" size-md="8">
               <p class="label">Your Balance</p>
               <h2 class="balance">$125,000</h2>
             </ion-col>
-            <ion-col size="4" class="text-align">
+            <ion-col size="12" size-md="4" class="text-align">
               <p class="resumen">Last month summary</p>
               <p class="porcentaje">+5.57%</p>
             </ion-col>
@@ -57,37 +56,6 @@
         <p class="serial-card">**** 2468</p>
       </ion-card>
 
-      <div class="botones">
-        <ion-grid>
-          <ion-row class="menu-row">
-            <ion-col size="3" class="menu-col">
-              <ion-button class="menu-button">
-                <img src="/src/assets/icons/pestana-web.png" alt="Gastos" class="icon-img" />
-              </ion-button>
-              <p class="icon-label">Gastos</p>
-            </ion-col>
-            <ion-col size="3" class="menu-col">
-              <ion-button class="menu-button">
-                <img src="/src/assets/icons/pestana-web.png" alt="Ahorros" class="icon-img" />
-              </ion-button>
-              <p class="icon-label">Ahorros</p>
-            </ion-col>
-            <ion-col size="3" class="menu-col">
-              <ion-button class="menu-button selected">
-                <img src="/src/assets/icons/pestana-web.png" alt="Metas" class="icon-img" />
-              </ion-button>
-              <p class="icon-label">Metas</p>
-            </ion-col>
-            <ion-col size="3" class="menu-col">
-              <ion-button class="menu-button">
-                <img src="/src/assets/icons/ajustamiento.png" alt="Más" class="icon-img" />
-              </ion-button>
-              <p class="icon-label">Más</p>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </div>
-
       <div class="ultimos-movimientos">
         <h2 class="modal-title">Últimos Movimientos</h2>
 
@@ -107,7 +75,6 @@
     </ion-content>
   </ion-page>
 </template>
-
 
 <script setup lang="js">
 import { 
@@ -149,10 +116,7 @@ ion-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-left: 16px;
-  padding-right: 16px;
-  padding-top: 16px;
-  padding-bottom: 0px;
+  padding: 16px;
 }
 
 .user-info {
@@ -162,9 +126,18 @@ ion-content {
 }
 
 .name {
+  margin-top: 40px;
   margin-left: 10px;
   font-size: 20px;
   font-weight: bold;
+}
+
+.title{
+  position: absolute;
+  top: 18%;
+  margin-left: 12px;
+  font-size: 14px;
+  color: #343638;
 }
 
 .round-button {
@@ -179,18 +152,18 @@ ion-content {
 }
 
 .notification {
-  position: relative;
-  left: 70%;
+  position: absolute;
+  left: 95%;
 }
 
 .container-contenido {
   padding-left: 16px;
+
   padding-right: 16px;
   padding-top: 0px;
   padding-bottom: 16px;
-  display: flex;
+  display: ad;
   background-color: #f4f4f4;
-  
 }
 
 .label {
@@ -226,6 +199,7 @@ ion-content {
   padding: 24px;
   color: white;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  
 }
 
 .header-container {
@@ -348,4 +322,33 @@ ion-button.menu-button {
   color: #0A2A62;
   font-weight: bold;
 }
+
+.icon-button {
+            z-index: 100;
+            margin-left: 200PX;
+            position: relative;
+            color: white;
+            border: none;
+            padding: 20px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 50%;
+            background-color: rgb(0, 13, 128);
+        }
+
+        .icon-button:hover {
+            background-color: #0b7dda;
+        }
+
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ff9800;
+            color: white;
+            font-size: 12px;
+            padding: 3px 6px;
+            border-radius: 50%;
+        }
+            
 </style>

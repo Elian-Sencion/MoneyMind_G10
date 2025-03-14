@@ -58,6 +58,7 @@ ion-content {
 }
 
 .estadistica {
+    position: relative;
     padding: 20px;
     background: white;
     border-radius: 10px;
