@@ -13,6 +13,7 @@
 import { IonButton, IonIcon } from '@ionic/vue';
 </script>
 
+
 <style scoped>
 
 .transaction-header {
